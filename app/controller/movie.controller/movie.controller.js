@@ -1,25 +1,42 @@
 const { Movie } = require("../../model/movie.model")
 
-exports.getMovie = async (req,res) => {
-    try{
-        const movie = await Movie.find({},{
-            _id:1,
-            movieName:1,
-            movieCategory:1,
-            movieDiscription:1,
-            movieImage:1,
-            movieDuriation:1,
-            movieDirector:1
-        });
-        res.status(201).send(movie)
 
-    }catch(e){
+exports.getMovie = async (req, res) => {
+    try {
+        const currentDate = new Date();
+
+        const movies = await Movie.aggregate([
+            {
+                $addFields: {
+                    movieEndDateDate: { $toDate: "$movieEndDate" } // Convert string to Date object
+                }
+            },
+            {
+                $match: {
+                    movieEndDateDate: { $gte: currentDate }
+                }
+            },
+            {
+                $project: { // Projecting only the required fields
+                    _id: 1,
+                    movieName: 1,
+                    movieCategory: 1,
+                    movieDescription: 1,
+                    movieImage: 1,
+                    movieDuration: 1,
+                    movieDirector: 1
+                }
+            }
+        ]);
+
+        res.status(200).send(movies);
+    } catch (error) {
         res.status(500).send({
-            message:'something went wrong ',
-            serverMessage:e.message
-        })
+            message: 'Something went wrong',
+            serverMessage: error.message
+        });
     }
-}
+};
 exports.postMovie = async (req,res)=> {
     try{
         const movie = req.body;
