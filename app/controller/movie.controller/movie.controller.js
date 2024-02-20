@@ -54,3 +54,15 @@ exports.postMovie = async (req,res)=> {
     }
 
 }
+exports.getParticular = async (req,res)=> {
+    try{
+        const id = req.params.id;
+        const movie = await Movie.findById(id);
+        res.status(200).send(movie);
+    }catch(e){
+        res.status(500).send({
+            message:'something went wrong ',
+            serverMessage:e.message
+        })
+    }
+}
