@@ -13,7 +13,7 @@ app.use(express.json());
 //for development mode 
 app.use(cors());
 
-mongoose.connect(dbUri);
+mongoose.connect("mongodb+srv://krksingh99:c5SVuMbng33zNpIZ@cluster0.0ca5ny1.mongodb.net/");
 const db = mongoose.connection;
 db.on('error',() => {
     console.log('something went wrong ')
