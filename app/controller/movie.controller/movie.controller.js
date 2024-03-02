@@ -1,4 +1,5 @@
-const { Movie } = require("../../model/movie.model")
+const { Movie } = require("../../model/movie.model");
+const { Order } = require("../../model/order.model");
 
 
 exports.getMovie = async (req, res) => {
@@ -92,4 +93,37 @@ exports.getAvaliableSeat = async (req,res) => {
         })
     }
 
+}
+
+exports.bookedSeat = async (req,res) => {
+    try{
+
+    //first booked ticket 
+    const order = req.body;
+    const savedOrder= await Order.create(order);
+    if(savedOrder){
+    const movieId=req.params.id
+    const movie = await Movie.findById(movieId);
+    movie.tickedBookedByUserIDList.id=[...movie.tickedBookedByUserIDList.id,savedOrder.id]
+    movie.totalTicketBooked= movie.totalTicketBooked+1
+    movie.ticketBookedByUser=[...movie.ticketBookedByUser,{...order}]
+     await  movie.save()
+    return res.status(200).send(movie)
+    }else{
+        return  res.status(500).send({
+            message:'something went wrong ',
+            serverMessage:e.message
+        })
+    }
+
+
+
+
+    }catch(e){
+res.status(500).send({
+            message:'something went wrong ',
+            serverMessage:e.message
+        })
+    }
+  
 }

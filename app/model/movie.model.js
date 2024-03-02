@@ -56,7 +56,13 @@ const movieSchema= new mongoose.Schema({
     },
     movieTrailer:{
         type:[String]
-    }  
+    },
+    movieTheaters:{
+        type:String
+    },
+    movieTheatersLocation:{
+        type:String
+    }
 })
 
 exports.Movie=mongoose.model('MOVIE',movieSchema)
